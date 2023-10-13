@@ -68,10 +68,17 @@ struct BatteryView: View {
                 .edgesIgnoringSafeArea(.all)
             
             VStack {
-                Button("Fetch Battery") {
+                Button(action: {
                     batteryLevel = getBatteryPercentage()
-                }
-                .padding()
+
+                        }) {
+                            Text("Fetch Battery")
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(Color.blue.opacity(0.7))
+                                .cornerRadius(10)
+                        }
+                                .padding()
                 
                 Text("Battery Level: \(batteryLevel, specifier: "%.2f")%")
                     .padding()
