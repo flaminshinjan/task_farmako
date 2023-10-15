@@ -5,8 +5,11 @@
 //  Created by Shinjan Patra on 15/10/23.
 //
 
-#ifndef BatteryFetch_h
-#define BatteryFetch_h
+// BatteryFetcher.h
+#import <Foundation/Foundation.h>
 
+@interface BatteryFetch : NSObject
 
-#endif /* BatteryFetch_h */
+- (void)fetchBatteryLevelWithCompletion:(void (^)(float batteryLevel))completion;
+
+@end

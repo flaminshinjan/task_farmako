@@ -62,12 +62,13 @@ struct BatteryView: View {
     @State private var batteryLevel: Float = 0.0
     
     var body: some View {
-        ZStack {
-            Image("horse_image")
-                .resizable()
-                .edgesIgnoringSafeArea(.all)
+        
+            
             
             VStack {
+                
+                Image("horse_image")
+            
                 Button(action: {
                     batteryLevel = getBatteryPercentage()
 
@@ -83,7 +84,7 @@ struct BatteryView: View {
                 Text("Battery Level: \(batteryLevel, specifier: "%.2f")%")
                     .padding()
             }
-        }
+        
     }
     
     func getBatteryPercentage() -> Float {
