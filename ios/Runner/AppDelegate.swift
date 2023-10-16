@@ -12,11 +12,17 @@ import SwiftUI
         guard let controller = window?.rootViewController as? FlutterViewController else {
             fatalError("RootViewController is not type FlutterViewController")
         }
-        BatteryPlugin.register(with: self.registrar(forPlugin: "BatteryPlugin"))
         
         let batteryChannel = FlutterMethodChannel(name: "battery", binaryMessenger: controller.binaryMessenger)
         batteryChannel.setMethodCallHandler({
             (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
+            if call.method == "getBatteryLevel" {
+                let batteryManager = BatteryPlugin()
+                let level = batteryManager.getBatteryLevel()
+                result(level * 100)
+            } else {
+                result(FlutterMethodNotImplemented)
+            }
         })
         
         let registrar = self.registrar(forPlugin: "BatteryView")
@@ -26,6 +32,7 @@ import SwiftUI
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 }
+
 class BatteryViewFactory: NSObject, FlutterPlatformViewFactory {
     let registrar: FlutterPluginRegistrar
 
@@ -69,10 +76,10 @@ struct BatteryView: View {
                 .scaledToFit()
             VStack {
                 Button(action: {
-                    batteryLevel = getBatteryPercentage()
-                    // Send battery level to Flutter
+                    let batteryManager = BatteryPlugin()
+                    self.batteryLevel = batteryManager.getBatteryLevel() * 100 
                     let channel = FlutterMethodChannel(name: "battery", binaryMessenger: AppDelegate.shared.controller!.binaryMessenger)
-                    channel.invokeMethod("batteryPercentage", arguments: batteryLevel)
+                    channel.invokeMethod("batteryPercentage", arguments: self.batteryLevel)
                 }) {
                     Text("Fetch Battery")
                         .foregroundColor(.white)
@@ -83,11 +90,6 @@ struct BatteryView: View {
                 .padding()
             }
         }
-    }
-    
-    func getBatteryPercentage() -> Float {
-        UIDevice.current.isBatteryMonitoringEnabled = true
-        return UIDevice.current.batteryLevel * 100
     }
 }
 
