@@ -8,23 +8,24 @@ import SwiftUI
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        let controller : FlutterViewController = window?.rootViewController as! FlutterViewController
-        let batteryChannel = FlutterMethodChannel(name: "battery", binaryMessenger: controller.binaryMessenger)
         
+        guard let controller = window?.rootViewController as? FlutterViewController else {
+            fatalError("RootViewController is not type FlutterViewController")
+        }
+        BatteryPlugin.register(with: self.registrar(forPlugin: "BatteryPlugin"))
+        
+        let batteryChannel = FlutterMethodChannel(name: "battery", binaryMessenger: controller.binaryMessenger)
         batteryChannel.setMethodCallHandler({
             (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in
-            // Handle battery messages later if needed
         })
         
         let registrar = self.registrar(forPlugin: "BatteryView")
         let batteryViewFactory = BatteryViewFactory(registrar: registrar!)
         registrar?.register(batteryViewFactory, withId: "BatteryView")
         
-        GeneratedPluginRegistrant.register(with: self)
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
 }
-
 class BatteryViewFactory: NSObject, FlutterPlatformViewFactory {
     let registrar: FlutterPluginRegistrar
 
