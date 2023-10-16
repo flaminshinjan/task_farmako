@@ -19,17 +19,14 @@ class BatteryScreen extends StatefulWidget {
 }
 
 class _BatteryScreenState extends State<BatteryScreen> {
-  // MethodChannel for communication with the native side
   final _batteryChannel = MethodChannel('battery');
-  double? batteryPercentage; // Variable to hold the battery percentage
+  double? batteryPercentage; 
 
   @override
   void initState() {
     super.initState();
-    // Method call handler for receiving battery percentage from native code
     _batteryChannel.setMethodCallHandler((call) async {
       if (call.method == "batteryPercentage") {
-        // When a battery percentage is received, update the UI
         setState(() {
           batteryPercentage = call.arguments as double;
         });
@@ -47,16 +44,15 @@ class _BatteryScreenState extends State<BatteryScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              width: 300, // Set your desired width
-              height: 200, // Set your desired height
+              width: 300, 
+              height: 200, 
               child: UiKitView(
                 viewType:
-                    'BatteryView', // The viewType should correspond to the one used in the native code
+                    'BatteryView', 
               ),
             ),
             if (batteryPercentage != null) ...[
-              // Display the battery percentage when it's available
-              SizedBox(height: 20), // For spacing
+              SizedBox(height: 20), 
               Text(
                 "Battery Percentage: $batteryPercentage%",
                 style: TextStyle(
