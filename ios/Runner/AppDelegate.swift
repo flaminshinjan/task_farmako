@@ -62,33 +62,40 @@ struct BatteryView: View {
     @State private var batteryLevel: Float = 0.0
     
     var body: some View {
-        
-            
-            
+        ZStack{
+            Image("horse_image")
+                .resizable()
+                .scaledToFit()
             VStack {
-                
-                Image("horse_image")
-            
                 Button(action: {
                     batteryLevel = getBatteryPercentage()
-
-                        }) {
-                            Text("Fetch Battery")
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(Color.blue.opacity(0.7))
-                                .cornerRadius(10)
-                        }
-                                .padding()
-                
-                Text("Battery Level: \(batteryLevel, specifier: "%.2f")%")
-                    .padding()
+                    // Send battery level to Flutter
+                    let channel = FlutterMethodChannel(name: "battery", binaryMessenger: AppDelegate.shared.controller!.binaryMessenger)
+                    channel.invokeMethod("batteryPercentage", arguments: batteryLevel)
+                }) {
+                    Text("Fetch Battery")
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.blue.opacity(0.7))
+                        .cornerRadius(10)
+                }
+                .padding()
             }
-        
+        }
     }
     
     func getBatteryPercentage() -> Float {
         UIDevice.current.isBatteryMonitoringEnabled = true
         return UIDevice.current.batteryLevel * 100
+    }
+}
+
+extension AppDelegate {
+    static var shared: AppDelegate {
+        return UIApplication.shared.delegate as! AppDelegate
+    }
+
+    var controller: FlutterViewController? {
+        return window?.rootViewController as? FlutterViewController
     }
 }

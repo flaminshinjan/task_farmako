@@ -4,7 +4,7 @@
 //
 //  Created by Shinjan Patra on 15/10/23.
 
-#import "BatteryFetcher.h"
+#import "BatteryFetch.h"
 #import <UIKit/UIKit.h>
 
 @implementation BatteryFetch
